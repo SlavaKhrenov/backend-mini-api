@@ -1,6 +1,10 @@
+
 # backend-mini-api
 
-Minimal REST API built with Node.js + Express + SQLite.
+Minimal production-style REST API built with Node.js, Express and SQLite.  
+Demonstrates layered architecture, JWT authentication, SQL relations, and transaction-safe order processing.
+
+---
 
 ## Features
 - Layered architecture: routes → controllers → services → repositories
@@ -10,6 +14,60 @@ Minimal REST API built with Node.js + Express + SQLite.
 - SQL joins + nested JSON responses (orders with items/products)
 - Transactions for order creation
 
+---
+
+## Why this project
+
+This project demonstrates how to design a small but well-structured backend service:
+
+- Clean separation of layers
+- Real relational SQL database usage
+- Authentication & authorization
+- Transactional business logic
+
+---
+
+## Architecture
+
+Client  
+↓  
+Routes  
+↓  
+Controllers  
+↓  
+Services  
+↓  
+Repositories  
+↓  
+SQLite  
+
+---
+
+## Database schema
+
+users
+- id
+- name
+- email
+- password_hash
+
+products
+- id
+- name
+- price
+
+orders
+- id
+- user_id
+- created_at
+
+order_items
+- order_id
+- product_id
+- qty
+
+---
+
 ## Tech stack
 - Node.js
 - Express
@@ -18,6 +76,8 @@ Minimal REST API built with Node.js + Express + SQLite.
 - bcrypt
 - dotenv
 - nodemon
+
+---
 
 ## Setup
 
@@ -78,38 +138,54 @@ http://localhost:3000
 
 ### Login
 ```bash
-curl -X POST http://localhost:3000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"bob@mail.com","password":"123456"}'
+curl -X POST http://localhost:3000/auth/login   -H "Content-Type: application/json"   -d '{"email":"bob@mail.com","password":"123456"}'
 ```
 
 ### Create order
 ```bash
-curl -X POST http://localhost:3000/orders \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer TOKEN" \
-  -d '{"items":[{"product_id":1,"qty":1}]}'
+curl -X POST http://localhost:3000/orders   -H "Content-Type: application/json"   -H "Authorization: Bearer TOKEN"   -d '{"items":[{"product_id":1,"qty":1}]}'
 ```
 
 ---
 
-## Project structure
+## Error handling
+
+- 400 — validation errors  
+- 401 — unauthorized  
+- 404 — not found  
+- 500 — server error  
+
+All errors returned as JSON:
 
 ```
-src/
-  app.js
-  server.js
-  config.js
-
-  routes/
-  controllers/
-  services/
-  repositories/
-  middlewares/
-  db/
+{ "error": "message" }
 ```
+
+---
+
+## Security
+
+- Passwords hashed with bcrypt
+- JWT-based authentication
+- Protected routes via middleware
+
+---
+
+## Roadmap
+
+- Pagination
+- Input validation with schema library
+- Refresh tokens
+- Tests
+- Docker support
 
 ---
 
 ## Notes
+
 This project was created as a backend practice project to demonstrate REST API design, database access, authentication, and layered architecture.
+
+---
+
+## License
+MIT
